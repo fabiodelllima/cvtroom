@@ -1,7 +1,7 @@
-Feature: Clip a section of a YouTube video
+Feature: Clip a time range from a YouTube video
   As a video editor
-  I want to download only a time range of a YouTube video
-  So that I avoid downloading and trimming the full file
+  I want to download only a specific time range of a YouTube video
+  So that I do not have to download and trim the full file
 
   Background:
     Given yt-dlp and ffmpeg are available in PATH
@@ -32,5 +32,5 @@ Feature: Clip a section of a YouTube video
   Scenario: Report a missing dependency
     Given ffmpeg is not available in PATH
     When I run "cvtr --url https://youtu.be/dQw4w9WgXcQ --start 1 --end 2"
-    Then the error mentions "ffmpeg not found in PATH"
+    Then the error message mentions "ffmpeg not found in PATH"
     And the command exits with code 1
