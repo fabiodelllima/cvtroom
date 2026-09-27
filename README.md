@@ -3,11 +3,11 @@
 [![pipeline](https://gitlab.com/delimafabio/cvtroom/badges/main/pipeline.svg)](https://gitlab.com/delimafabio/cvtroom/-/pipelines)
 [![coverage](https://gitlab.com/delimafabio/cvtroom/badges/main/coverage.svg)](https://gitlab.com/delimafabio/cvtroom/-/pipelines)
 
-`cvtr` is a command-line tool that clips a time range from a YouTube video, downloading only that range instead of the full file.
+CVTRoom provides `cvtr`, a command-line tool that clips a time range from a YouTube video by downloading only that range rather than the full file.
 
 ## Tutorial
 
-Install the runtime dependencies, [yt-dlp](https://github.com/yt-dlp/yt-dlp) and [ffmpeg](https://ffmpeg.org/), then build and install the binary (Go 1.24 or later):
+This tutorial takes you from installation to your first clip. First, install the two runtime dependencies, [yt-dlp](https://github.com/yt-dlp/yt-dlp) and [ffmpeg](https://ffmpeg.org/). Then build and install the binary, which requires Go 1.24 or later:
 
 ```bash
 git clone https://gitlab.com/delimafabio/cvtroom.git
@@ -15,39 +15,45 @@ cd cvtroom
 make install
 ```
 
-Clip seconds 65 to 90 of a video:
+Finally, clip the range between 1:05 and 1:30 of a video:
 
 ```bash
 cvtr --url "https://youtu.be/dQw4w9WgXcQ" --start 1:05 --end 1:30
 ```
 
-The clip is saved in the current directory, named after the video title.
+The clip is saved to the current directory under the title of the video.
 
 ## How-to guides
 
-**Preview the command before downloading.** Add `--dry-run` to print the yt-dlp command without running it.
+### Preview the command without downloading
 
-**Choose the output file name.** Pass a yt-dlp output template: `--output "intro.%(ext)s"`.
+Add `--dry-run` to print the yt-dlp command that cvtr would run, without executing it.
 
-**Run the checks locally.** `make test` runs the suite with the race detector, `make cover` prints coverage, `make vet` and `make vuln` run static analysis and the vulnerability scan.
+### Choose the output file name
+
+Pass a yt-dlp output template through `--output`, for example `--output "intro.%(ext)s"`.
+
+### Run the quality checks locally
+
+`make test` runs the test suite under the race detector, and `make cover` reports test coverage. `make vet` performs static analysis, and `make vuln` scans the code and the standard library for known vulnerabilities.
 
 ## Reference
 
-| Flag        | Required | Description                                                                    |
-| ----------- | -------- | ------------------------------------------------------------------------------ |
-| `--url`     | yes      | Video URL on `youtube.com`, `m.youtube.com`, `music.youtube.com` or `youtu.be` |
-| `--start`   | yes      | Clip start as `SS`, `MM:SS` or `HH:MM:SS`; seconds may be fractional           |
-| `--end`     | yes      | Clip end, same formats; must be after `--start`                                |
-| `--output`  | no       | yt-dlp output template                                                         |
-| `--dry-run` | no       | Print the yt-dlp command and exit                                              |
-| `--version` | no       | Print the version and exit                                                     |
+| Flag        | Required | Description                                                                                |
+| ----------- | -------- | ------------------------------------------------------------------------------------------ |
+| `--url`     | Yes      | Video URL on `youtube.com`, `m.youtube.com`, `music.youtube.com`, or `youtu.be`            |
+| `--start`   | Yes      | Start of the range, as `SS`, `MM:SS`, or `HH:MM:SS`; seconds may include a fractional part |
+| `--end`     | Yes      | End of the range, in the same formats; must be later than `--start`                        |
+| `--output`  | No       | yt-dlp output template                                                                     |
+| `--dry-run` | No       | Print the yt-dlp command without running it                                                |
+| `--version` | No       | Print the version and exit                                                                 |
 
-Exit codes: `0` success, `1` runtime failure (missing dependency, yt-dlp error), `2` usage error.
+cvtr exits with code `0` on success, `1` on a runtime failure (a missing dependency or a yt-dlp error), and `2` on a usage error.
 
 ## Explanation
 
-cvtr validates every input before starting any process and delegates extraction to yt-dlp, which fetches only the requested section and uses ffmpeg for keyframe-accurate cuts. Process execution sits behind a `Runner` interface, so the whole CLI is tested without network access. The project depends only on the Go standard library.
+cvtr validates every input before it starts any external process and delegates extraction to yt-dlp, which downloads only the requested section and relies on ffmpeg for keyframe-accurate cuts. Because process execution sits behind a `Runner` interface, the entire CLI can be tested without network access. The project depends exclusively on the Go standard library.
 
-Design decisions are recorded in [`docs/adr`](docs/adr), requirements in [`docs/requirements.md`](docs/requirements.md) and behaviour scenarios in [`features`](features).
+Architectural decisions are recorded in [`docs/adr`](docs/adr), requirements in [`docs/requirements.md`](docs/requirements.md), and behavior scenarios in [`features`](features).
 
-Use this tool only for content you are allowed to download, in line with YouTube's Terms of Service.
+Use this tool only for content you are permitted to download, in accordance with the YouTube Terms of Service.
