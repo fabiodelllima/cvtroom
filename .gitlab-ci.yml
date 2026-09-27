@@ -5,7 +5,7 @@ stages:
   - build
 
 default:
-  image: golang:1.25
+  image: golang:1.26
 
 variables:
   GOPATH: $CI_PROJECT_DIR/.go
@@ -40,7 +40,7 @@ test:
 govulncheck:
   stage: security
   script:
-    - go run golang.org/x/vuln/cmd/govulncheck@latest ./...
+    - go run golang.org/x/vuln/cmd/govulncheck@v1.8.0 ./...
 
 build:
   stage: build
